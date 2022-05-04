@@ -5,8 +5,10 @@ const db = new sqlite3.Database("./lab2.db", sqlite3.OPEN_READWRITE, (err) => {
     console.log("No errors");
 });
 
-const insert = `INSERT INTO Cars(Timestamp, Email, Name, Year, Make, Model, Car_ID, Judge_ids)
+const insertCars = `INSERT INTO Cars(Timestamp, Email, Name, Year, Make, Model, Car_ID, Judge_ids)
                 VALUES(?,?,?,?,?,?,?,?)`;
+
+const updateCars = `UPDATE Cars SET Timestamp = ?, Email = ?, Name = ?, Year = ?, Make = ?, Model = ?, Judge_ids = ? WHERE car_id = ?`;
 
 const displayCars = `SELECT * FROM Cars`;
 
