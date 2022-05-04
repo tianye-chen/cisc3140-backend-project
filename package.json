@@ -1,7 +1,7 @@
 {
-  "name": "cisc3140-fullstack-project",
+  "name": "cisc3140-backend-project",
   "version": "1.0.0",
-  "description": "CISC3140 Labs 4 and 5",
+  "description": "CISC3140 Lab 4",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
