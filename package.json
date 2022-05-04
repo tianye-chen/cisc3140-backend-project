@@ -1,0 +1,23 @@
+{
+  "name": "cisc3140-fullstack-project",
+  "version": "1.0.0",
+  "description": "CISC3140 Labs 4 and 5",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tianye-chen/cisc3140-fullstack-project.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tianye-chen/cisc3140-fullstack-project/issues"
+  },
+  "homepage": "https://github.com/tianye-chen/cisc3140-fullstack-project#readme",
+  "dependencies": {
+    "sqlite3": "^5.0.6"
+  }
+}
