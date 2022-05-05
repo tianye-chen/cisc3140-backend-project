@@ -1,3 +1,6 @@
+const express = require('express')
+const app = express()
+const PORT = 8080
 const sqlite3 = require("sqlite3").verbose();
 
 const db = new sqlite3.Database("./lab2.db", sqlite3.OPEN_READWRITE, (err) => {
@@ -18,6 +21,21 @@ db.all(displayCars, [], (err, rows) => {
     rows.forEach((row) => {
         console.log(row);
     });
+});
+
+app.listen(PORT,()=>{
+        console.log(`PORT ${PORT}`)
+    })
+
+app.get('/', (req, res) => {
+    db.serialize(()=>{
+        db.each(displayCars,(err,row)=>{
+            if(err){
+                res.send("Error while displaying")
+            }
+            res.send(`Timestamp: ${row.Timestamp}`)
+        })
+    })
 });
 
 db.close((err) => {
