@@ -208,6 +208,9 @@ app.listen(PORT, () => {
     console.log(`PORT ${PORT}`);
 });
 
-//  db.close((err) => {
-//      if (err) return console.error(err.message);
-//  });
+apt.get("/close", (req, res) => {
+    db.close((err) => {
+        if (err) return console.error(err.message);
+    });
+    console.log("Database successfully closed");
+});
