@@ -13,7 +13,9 @@ const insertCars = `INSERT INTO Cars(Timestamp, Email, Name, Year, Make, Model, 
 
 const updateCars = `UPDATE Cars SET Timestamp = ?, Email = ?, Name = ?, Year = ?, Make = ?, Model = ?, Judge_ids = ? WHERE car_id = ?`;
 
-db.all(`SELECT * FROM Judges`, [], (err, rows) => {
+const insertJudge = `INSERT INTO Judges (Car_ids, Judge_ID, Judge_Name) VALUES(?,?,?)`;
+
+db.all(`SELECT * FROM Cars`, [], (err, rows) => {
     if (err) return console.error(err.message);
 
     console.log(rows[0]);
@@ -47,6 +49,37 @@ app.get("/car/:id", (req, res) => {
     });
 });
 
+app.get("/car/add/:newCar", (req, res) => {
+    const newCar = JSON.parse(req.params.newCar);
+    db.run(insertCars, [
+        newCar.Timestamp,
+        newCar.Email,
+        newCar.Name,
+        parseInt(newCar.Year),
+        newCar.Make,
+        newCar.Model,
+        parseInt(newCar.Car_ID),
+        newCar.Judge_ids,
+    ]);
+    res.send(newCar.Car_ID);
+});
+
+app.get('/car/update/:id/:updateCar',(req,res)=>{
+    const updateCar = JSON.parse(req.params.updateCar)
+    const id = req.params.id
+
+    db.run(updateCars,
+        [updateCar.Timestamp,
+            updateCar.Email,
+            updateCar.Name,
+            parseInt(updateCar.Year),
+            updateCar.Make,
+            updateCar.Model,
+            updateCar.Judge_ids,
+            id])
+    res.send(updateCar)
+})
+
 app.get('/judge',(req,res) => {
     db.serialize(()=>{
         db.all(`SELECT * FROM Judges ORDER BY Judge_ID`,[],(err,rows)=>{
@@ -62,7 +95,7 @@ app.get('/judge/:id',(req,res)=>{
     db.serialize(() => {
         db.each(
             "SELECT * FROM Judges WHERE Judge_ID = ?",
-            [id],
+            [id+" "],
             (err, rows) => {
                 if (err) {
                     res.send("Error while displaying");
@@ -72,6 +105,16 @@ app.get('/judge/:id',(req,res)=>{
         );
     });
 })
+
+app.get("/judge/add/:newJudge", (req, res) => {
+    const newJudge = JSON.parse(req.params.newJudge);
+    db.run(insertJudge, [
+        parseInt(newJudge.Car_ids),
+        newJudge.Judge_ID,
+        newJudge.Judge_Name,
+    ]);
+    res.send(newJudge);
+});
 
 app.listen(PORT, () => {
     console.log(`PORT ${PORT}`);
