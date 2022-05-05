@@ -208,7 +208,7 @@ app.listen(PORT, () => {
     console.log(`PORT ${PORT}`);
 });
 
-apt.get("/close", (req, res) => {
+app.get("/close", (req, res) => {
     db.close((err) => {
         if (err) return console.error(err.message);
     });
