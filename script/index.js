@@ -184,13 +184,13 @@ app.get("/judge/update/:id/:updateJudge", (req, res) => {
     const updateJudge = JSON.parse(req.params.updateJudge);
     const id = req.params.id;
 
-    db.run(updateJudge, [updateJudge.Car_ids, updateJudge.JUDGES_Name, id]);
+    db.run(updateJudges, [updateJudge.Car_ids, updateJudge.JUDGES_Name, id]);
     res.send(updateJudge);
 });
 
 // Update judge by params
 app.get("/judge/update/:Judge_ID/:Car_ids/:Judge_Name", (req, res) => {
-    db.run(updateJudge, [
+    db.run(updateJudges, [
         req.params.Judge_ID,
         req.params.Car_ids,
         req.params.Judge_Name,
