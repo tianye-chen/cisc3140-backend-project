@@ -13,23 +13,30 @@ const insertCars = `INSERT INTO Cars(Timestamp, Email, Name, Year, Make, Model, 
 
 const updateCars = `UPDATE Cars SET Timestamp = ?, Email = ?, Name = ?, Year = ?, Make = ?, Model = ?, Judge_ids = ? WHERE car_id = ?`;
 
-const displayCars = `SELECT * FROM Cars`;
-
-db.all(displayCars, [], (err, rows) => {
+db.all(`SELECT * FROM Judges`, [], (err, rows) => {
     if (err) return console.error(err.message);
 
     console.log(rows[0]);
 });
 
-app.listen(PORT, () => {
-    console.log(`PORT ${PORT}`);
+app.get("/car", (req, res) => {
+    db.serialize(() => {
+        db.all(`SELECT * FROM Cars ORDER BY Car_ID`,[],(err, rows) => {
+                if (err) {
+                    res.send("Error while displaying");
+                }
+                res.json(rows);
+            }
+        );
+    });
 });
 
-app.get("/", (req, res) => {
+app.get("/car/:id", (req, res) => {
+    const id = req.params.id
     db.serialize(() => {
         db.each(
-            "SELECT name NAME FROM Cars WHERE Car_ID = ?",
-            [1],
+            "SELECT * FROM Cars WHERE Car_ID = ?",
+            [id],
             (err, rows) => {
                 if (err) {
                     res.send("Error while displaying");
@@ -40,9 +47,23 @@ app.get("/", (req, res) => {
     });
 });
 
-app.get("/all", (req, res) => {
+app.get('/judge',(req,res) => {
+    db.serialize(()=>{
+        db.all(`SELECT * FROM Judges ORDER BY Judge_ID`,[],(err,rows)=>{
+            if(err) 
+                res.send("Error while displaying judge")
+            res.json(rows)
+        })
+    })
+})
+
+app.get('/judge/:id',(req,res)=>{
+    const id = req.params.id
     db.serialize(() => {
-        db.all(displayCars,[],(err, rows) => {
+        db.each(
+            "SELECT * FROM Judges WHERE Judge_ID = ?",
+            [id],
+            (err, rows) => {
                 if (err) {
                     res.send("Error while displaying");
                 }
@@ -50,9 +71,12 @@ app.get("/all", (req, res) => {
             }
         );
     });
+})
+
+app.listen(PORT, () => {
+    console.log(`PORT ${PORT}`);
 });
 
-/*
-db.close((err) => {
-    if (err) return console.error(err.message);
-});*/
+//  db.close((err) => {
+//      if (err) return console.error(err.message);
+//  });
