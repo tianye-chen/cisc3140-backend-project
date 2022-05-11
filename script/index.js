@@ -140,7 +140,7 @@ app.get("/judge/:id", (req, res) => {
     const id = req.params.id;
     db.serialize(() => {
         db.each(
-            "SELECT * FROM Judges WHERE Judge_ID = ?",
+            "SELECT * FROM Judges WHERE Car_ids = ?",
             [id],
             (err, rows) => {
                 if (err) {
