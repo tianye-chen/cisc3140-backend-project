@@ -198,14 +198,21 @@ app.get("/judge/update/:id/:updateJudge", (req, res) => {
 });
 
 // Update judge by params
-app.get("/judge/update/:Judge_ID/:Car_ids/:Judge_Name", (req, res) => {
-    db.run(updateJudges, [
-        req.params.Judge_ID,
-        req.params.Car_ids,
-        req.params.Judge_Name,
-    ]);
-    res.send(req.params.Judge_ID);
-});
+app.get(
+    "/judge/update/:Judge_ID/:Car_ids/:Judge_Name/:CarsJudged/:starttime/:endtime/:minspent/:avgspd",
+    (req, res) => {
+        db.run(updateJudges, [
+            req.params.Judge_ID,
+            req.params.Car_ids,
+            req.params.Judge_Name,
+            req.params.CarsJudged,
+            req.params.starttime,
+            req.params.minspent,
+            req.params.avgspd,
+        ]);
+        res.send(req.params.Judge_ID);
+    }
+);
 
 // Update judge by query, params must be array
 app.get("/judge/update/query/param", (req, res) => {
