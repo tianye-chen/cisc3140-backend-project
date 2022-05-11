@@ -12,11 +12,11 @@ const db = new sqlite3.Database("./lab2.db", sqlite3.OPEN_READWRITE, (err) => {
 const insertCars = `INSERT INTO Cars(Timestamp, Email, Name, Year, Make, Model, Car_ID, Judge_ids)
                 VALUES(?,?,?,?,?,?,?,?)`;
 
-const updateCars = `UPDATE Cars SET Timestamp = ?, Email = ?, Name = ?, Year = ?, Make = ?, Model = ?, Judge_ids = ? WHERE Car_ID = ? VALUE(?,?,?,?,?,?,?,?)`;
+const updateCars = `UPDATE Cars SET Timestamp = ?, Email = ?, Name = ?, Year = ?, Make = ?, Model = ?, Judge_ids = ? WHERE Car_ID = ?`;
 
-const updateJudges = `UPDATE Judges SET Car_ids = ?, JUDGES_Name = ? WHERE Judge_ID = ? VALUE(?,?)`;
+const updateJudges = `UPDATE Judges SET Judge_ID = ?, Judge_Name = ?, Car_Judged = ?, Start_Time = ?, End_Time = ?, Mins_Spent = ?, Avg_Spd = ? WHERE Car_ids = ?`;
 
-const insertJudge = `INSERT INTO Judges (Car_ids, Judge_ID, Judge_Name) VALUES(?,?,?)`;
+const insertJudge = `INSERT INTO Judges (Car_ids, Judge_ID, Judge_Name, Car_Judged, Start_Time, End_Time, Mins_Spent, Avg_Spd) VALUES(?,?,?,?,?,?,?,?)`;
 
 // Display all cars
 app.get("/car", (req, res) => {
@@ -139,18 +139,14 @@ app.get("/judge", (req, res) => {
 app.get("/judge/:id", (req, res) => {
     const id = req.params.id;
     db.serialize(() => {
-        db.each(
-            "SELECT * FROM Judges WHERE Judge_ID = ?",
-            [id],
-            (err, rows) => {
-                if (err) {
-                    res.send("Error while displaying");
-                }
-                try {
-                    res.json(rows);
-                } catch (err) {}
+        db.each("SELECT * FROM Judges WHERE Car_ids = ?", [id], (err, rows) => {
+            if (err) {
+                res.send("Error while displaying");
             }
-        );
+            try {
+                res.json(rows);
+            } catch (err) {}
+        });
     });
 });
 
@@ -170,7 +166,7 @@ app.get(
     "/judge/add/:Car_ids/:Judge_ID/:Judge_Name/:CarsJudged/:starttime/:endtime/:minspent/:avgspd",
     (req, res) => {
         db.run(insertJudge, [
-            req.params.Car_ids,
+            parseInt(req.params.Car_ids),
             req.params.Judge_ID,
             req.params.Judge_Name,
             req.params.CarsJudged,
@@ -193,22 +189,22 @@ app.get("/judge/update/:id/:updateJudge", (req, res) => {
     const updateJudge = JSON.parse(req.params.updateJudge);
     const id = req.params.id;
 
-    db.run(updateJudges, [updateJudge.Car_ids, updateJudge.JUDGES_Name, id]);
+    db.run(updateJudges, [updateJudge.Car_ids, updateJudge.Judge_Name, id]);
     res.send(updateJudge);
 });
 
 // Update judge by params
 app.get(
-    "/judge/update/:Judge_ID/:Car_ids/:Judge_Name/:CarsJudged/:starttime/:endtime/:minspent/:avgspd",
+    "/judge/update/:Car_ids/:Judge_ID/:Judge_Name/:CarsJudged/:starttime/:endtime/:minspent/:avgspd",
     (req, res) => {
         db.run(updateJudges, [
             req.params.Judge_ID,
-            req.params.Car_ids,
             req.params.Judge_Name,
             req.params.CarsJudged,
             req.params.starttime,
             req.params.minspent,
             req.params.avgspd,
+            req.params.Car_ids,
         ]);
         res.send(req.params.Judge_ID);
     }
