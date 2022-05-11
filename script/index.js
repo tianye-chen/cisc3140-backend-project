@@ -12,9 +12,9 @@ const db = new sqlite3.Database("./lab2.db", sqlite3.OPEN_READWRITE, (err) => {
 const insertCars = `INSERT INTO Cars(Timestamp, Email, Name, Year, Make, Model, Car_ID, Judge_ids)
                 VALUES(?,?,?,?,?,?,?,?)`;
 
-const updateCars = `UPDATE Cars SET Timestamp = ?, Email = ?, Name = ?, Year = ?, Make = ?, Model = ?, Judge_ids = ? WHERE Car_ID = ? VALUE(?,?,?,?,?,?,?,?)`;
+const updateCars = `UPDATE Cars SET Timestamp = ?, Email = ?, Name = ?, Year = ?, Make = ?, Model = ?, Judge_ids = ? WHERE Car_ID = ? VALUE(?,?,?,?,?,?,?)`;
 
-const updateJudges = `UPDATE Judges SET Car_ids = ?, JUDGES_Name = ? WHERE Judge_ID = ? VALUE(?,?,?)`;
+const updateJudges = `UPDATE Judges SET Car_ids = ?, JUDGES_Name = ? WHERE Judge_ID = ? VALUE(?,?)`;
 
 const insertJudge = `INSERT INTO Judges (Car_ids, Judge_ID, Judge_Name) VALUES(?,?,?)`;
 
@@ -141,12 +141,14 @@ app.get("/judge/:id", (req, res) => {
     db.serialize(() => {
         db.each(
             "SELECT * FROM Judges WHERE Judge_ID = ?",
-            [id + " "],
+            [id],
             (err, rows) => {
                 if (err) {
                     res.send("Error while displaying");
                 }
-                res.json(rows);
+                try {
+                    res.json(rows);
+                } catch (err) {}
             }
         );
     });
