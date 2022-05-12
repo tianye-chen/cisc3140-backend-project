@@ -206,6 +206,7 @@ app.get(
             req.params.Judge_Name,
             req.params.CarsJudged,
             req.params.starttime,
+            req.params.endtime,
             req.params.minspent,
             req.params.avgspd,
             req.params.Car_ids,
