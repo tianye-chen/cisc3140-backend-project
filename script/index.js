@@ -139,14 +139,18 @@ app.get("/judge", (req, res) => {
 app.get("/judge/:id", (req, res) => {
     const id = req.params.id;
     db.serialize(() => {
-        db.each("SELECT * FROM Judges WHERE Car_ids = ?", [id], (err, rows) => {
-            if (err) {
-                res.send("Error while displaying");
+        db.each(
+            "SELECT * FROM Judges WHERE Car_ids = ?",
+            [id],
+            (err, rows) => {
+                if (err) {
+                    res.send("Error while displaying");
+                }
+                try {
+                    res.json(rows);
+                } catch (err) {}
             }
-            try {
-                res.json(rows);
-            } catch (err) {}
-        });
+        );
     });
 });
 
